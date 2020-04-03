@@ -8,7 +8,6 @@ void main() => runApp(MyApp());
 class MyApp extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    
     return _MyAppState();
   }
 }
@@ -18,15 +17,14 @@ class _MyAppState extends State<MyApp> {
   Map userProfile;
   final facebookLogin = FacebookLogin();
 
-  _loginWithFB() async{
-
-    
+  _loginWithFB() async {
     final result = await facebookLogin.logInWithReadPermissions(['email']);
 
     switch (result.status) {
       case FacebookLoginStatus.loggedIn:
         final token = result.accessToken.token;
-        final graphResponse = await http.get('https://graph.facebook.com/v2.12/me?fields=name,picture,email&access_token=${token}');
+        final graphResponse = await http.get(
+            'https://graph.facebook.com/v2.12/me?fields=name,picture,email&access_token=${token}');
         final profile = JSON.jsonDecode(graphResponse.body);
         print(profile);
         setState(() {
@@ -36,16 +34,15 @@ class _MyAppState extends State<MyApp> {
         break;
 
       case FacebookLoginStatus.cancelledByUser:
-        setState(() => _isLoggedIn = false );
+        setState(() => _isLoggedIn = false);
         break;
       case FacebookLoginStatus.error:
-        setState(() => _isLoggedIn = false );
+        setState(() => _isLoggedIn = false);
         break;
     }
-
   }
 
-  _logout(){
+  _logout() {
     facebookLogin.logOut();
     setState(() {
       _isLoggedIn = false;
@@ -54,7 +51,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    
     return MaterialApp(
       home: Scaffold(
         body: Center(
@@ -62,11 +58,18 @@ class _MyAppState extends State<MyApp> {
                 ? Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Image.network(userProfile["picture"]["data"]["url"], height: 50.0, width: 50.0,),
+                      Image.network(
+                        userProfile["picture"]["data"]["url"],
+                        height: 50.0,
+                        width: 50.0,
+                      ),
                       Text(userProfile["name"]),
-                      OutlineButton( child: Text("Logout"), onPressed: (){
-                        _logout();
-                      },)
+                      OutlineButton(
+                        child: Text("Logout"),
+                        onPressed: () {
+                          _logout();
+                        },
+                      )
                     ],
                   )
                 : Center(
